@@ -55,6 +55,33 @@ const SecretReading = ({ language = 'zh', tarotData = null }) => {
         const status = await CoffeePay.getPaidStatus();
         setPaymentStatus(status);
         if (status.isValid && !status.isExpired) {
+          const generateDeepReading = (data) => {
+            if (!data || !data.card) return;
+            const card = data.card;
+            const question = data.question;
+            const isReversed = data.isReversed;
+            const reading = {
+              deepAnalysis: `${card.name[language]}牌在您的問題「${question}」中展現了深層的意義。${isReversed ? '逆位' : '正位'}的${card.name[language]}象徵著${isReversed ? card.meaningReversed[language] : card.meaningUpright[language]}。`,
+              pastPresentFuture: {
+                past: `過去：您經歷的挑戰為現在的情況奠定了基礎。${card.name[language]}牌顯示您過去的經驗中蘊含著重要的智慧。`,
+                present: `現在：當前的狀況需要您運用${card.name[language]}牌所代表的品質。這是一個關鍵的轉折點。`,
+                future: `未來：如果您能夠理解並應用${card.name[language]}牌的教導，未來將會帶來積極的轉變和成長。`,
+              },
+              personalGuidance: [
+                `擁抱${card.name[language]}牌所代表的${card.keywords[language][0]}，這將成為您前進的動力。`,
+                `注意${card.keywords[language][1]}在您生活中的體現，它將指引您做出正確的決定。`,
+                `培養${card.keywords[language][2]}的品質，這將幫助您克服當前的挑戰。`,
+                `記住${card.name[language]}牌的核心訊息：${card.description[language]}`,
+              ],
+              actionPlan: [
+                '在接下來的一週內，每天花10分鐘冥想這張牌的意義',
+                '將這次占卜的洞察記錄在日記中，定期回顧',
+                '在面對相關決定時，回想這張牌給您的指引',
+                '保持開放的心態，接受宇宙為您安排的機會',
+              ],
+            };
+            setDeepReading(reading);
+          };
           generateDeepReading(status.tarotData || tarotData);
         }
       } catch (error) {
@@ -64,35 +91,7 @@ const SecretReading = ({ language = 'zh', tarotData = null }) => {
       }
     };
     checkPaymentStatus();
-  }, [tarotData]);
-
-  const generateDeepReading = (data) => {
-    if (!data || !data.card) return;
-    const card = data.card;
-    const question = data.question;
-    const isReversed = data.isReversed;
-    const reading = {
-      deepAnalysis: `${card.name[language]}牌在您的問題「${question}」中展現了深層的意義。${isReversed ? '逆位' : '正位'}的${card.name[language]}象徵著${isReversed ? card.meaningReversed[language] : card.meaningUpright[language]}。`,
-      pastPresentFuture: {
-        past: `過去：您經歷的挑戰為現在的情況奠定了基礎。${card.name[language]}牌顯示您過去的經驗中蘊含著重要的智慧。`,
-        present: `現在：當前的狀況需要您運用${card.name[language]}牌所代表的品質。這是一個關鍵的轉折點。`,
-        future: `未來：如果您能夠理解並應用${card.name[language]}牌的教導，未來將會帶來積極的轉變和成長。`,
-      },
-      personalGuidance: [
-        `擁抱${card.name[language]}牌所代表的${card.keywords[language][0]}，這將成為您前進的動力。`,
-        `注意${card.keywords[language][1]}在您生活中的體現，它將指引您做出正確的決定。`,
-        `培養${card.keywords[language][2]}的品質，這將幫助您克服當前的挑戰。`,
-        `記住${card.name[language]}牌的核心訊息：${card.description[language]}`,
-      ],
-      actionPlan: [
-        '在接下來的一週內，每天花10分鐘冥想這張牌的意義',
-        '將這次占卜的洞察記錄在日記中，定期回顧',
-        '在面對相關決定時，回想這張牌給您的指引',
-        '保持開放的心態，接受宇宙為您安排的機會',
-      ],
-    };
-    setDeepReading(reading);
-  };
+  }, [tarotData, language]); // 修正：添加 language 到依賴陣列
 
   if (isLoading) {
     return (
