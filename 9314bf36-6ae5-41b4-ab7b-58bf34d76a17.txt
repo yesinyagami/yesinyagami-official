@@ -1,4 +1,0 @@
-VITE_BMAC_URL=https://buymeacoffee.com/yesinyagami
-VITE_APP_TITLE=YESINYAGAMI塔羅占卜
-REACT_APP_GEMINI_API_KEY=your-gemini-api-key
-REACT_APP_GPT_API_KEY=your-gpt-api-key

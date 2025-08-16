@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rm:*)",
+      "Bash(pnpm lint:*)",
+      "Bash(pnpm build:*)",
+      "Bash(chmod:*)",
+      "Bash(npm run lint)",
+      "Bash(npm run lint:*)",
+      "Bash(npm run build:*)",
+      "Bash(timeout 10 npm run dev)",
+      "Bash(timeout:*)",
+      "Bash(curl:*)",
+      "Bash(python:*)",
+      "Bash(npm run dev:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(cp:*)",
+      "Bash(npm install:*)",
+      "Bash(pip install:*)",
+      "Bash(npm create vue:*)",
+      "Bash(mkdir:*)",
+      "Bash(mv:*)",
+      "Bash(npx tailwindcss init:*)",
+      "Bash(git add:*)",
+      "Bash(npm create:*)",
+      "Bash(npx tailwindcss:*)"
+    ],
+    "deny": []
+  }
+}
