@@ -1,0 +1,132 @@
+version: '3.8'
+
+services:
+  # Night God Tarot Web Application
+  web:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    image: night-god-tarot:latest
+    container_name: night-god-tarot-web
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - MONICA_API_KEY=${MONICA_API_KEY}
+      - MONICA_BASE_URL=https://openapi.monica.im
+      - MONICA_ONLY_MODE=true
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=nightgod_tarot
+      - DB_USER=nightgod
+      - DB_PASSWORD=${DB_PASSWORD}
+    depends_on:
+      - redis
+      - postgres
+    volumes:
+      - ./uploads:/app/uploads
+      - ./logs:/app/logs
+    networks:
+      - nightgod-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Redis for caching and session storage
+  redis:
+    image: redis:7-alpine
+    container_name: night-god-tarot-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis-data:/data
+    networks:
+      - nightgod-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # PostgreSQL for persistent data storage
+  postgres:
+    image: postgres:15-alpine
+    container_name: night-god-tarot-db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=nightgod_tarot
+      - POSTGRES_USER=nightgod
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - nightgod-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nightgod"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Nginx reverse proxy (optional, for production)
+  nginx:
+    image: nginx:alpine
+    container_name: night-god-tarot-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./public:/usr/share/nginx/html:ro
+    depends_on:
+      - web
+    networks:
+      - nightgod-network
+    healthcheck:
+      test: ["CMD", "nginx", "-t"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Backup service
+  backup:
+    image: postgres:15-alpine
+    container_name: night-god-tarot-backup
+    restart: "no"
+    environment:
+      - PGPASSWORD=${DB_PASSWORD}
+    volumes:
+      - ./backups:/backups
+    command: >
+      sh -c "while true; do
+        pg_dump -h postgres -U nightgod nightgod_tarot > /backups/backup_$$(date +%Y%m%d_%H%M%S).sql;
+        find /backups -name 'backup_*.sql' -mtime +7 -delete;
+        sleep 86400;
+      done"
+    depends_on:
+      - postgres
+    networks:
+      - nightgod-network
+
+networks:
+  nightgod-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
+    driver: local
+  redis-data:
+    driver: local

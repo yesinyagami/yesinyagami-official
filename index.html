@@ -3,10 +3,18 @@
   <head>
     <meta charset="UTF-8">
     <link rel="icon" href="/favicon.ico">
+    <link rel="manifest" href="/manifest.json">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Night God Tarot - Divine AI Wisdom</title>
     <meta name="description" content="Experience divine guidance through AI-powered tarot readings with unlimited Monica AI intelligence">
     <meta name="keywords" content="tarot, AI, Monica, divine guidance, fortune telling, spiritual wisdom">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#ffd700">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Night God Tarot">
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
     
     <!-- Open Graph -->
     <meta property="og:title" content="Night God Tarot - Divine AI Wisdom">
@@ -76,5 +84,20 @@
       </div>
     </div>
     <script type="module" src="/src/main.ts"></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/service-worker.js')
+            .then(registration => {
+              console.log('Service Worker registered:', registration);
+            })
+            .catch(error => {
+              console.error('Service Worker registration failed:', error);
+            });
+        });
+      }
+    </script>
   </body>
 </html>
