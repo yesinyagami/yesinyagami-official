@@ -5,7 +5,12 @@
 
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'night-god-tarot-secret-key-2024';
+const JWT_SECRET = process.env.JWT_SECRET || (() => {
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('JWT_SECRET environment variable is required in production');
+  }
+  return 'night-god-tarot-dev-secret-key-2024';
+})();
 
 // Verify JWT token
 export function authenticateToken(req, res, next) {
@@ -79,9 +84,52 @@ export function generateToken(user) {
       id: user.id,
       email: user.email,
       tier: user.tier || 'free',
-      name: user.name
+      name: user.name,
+      iat: Math.floor(Date.now() / 1000)
     },
     JWT_SECRET,
-    { expiresIn: '7d' }
+    { 
+      expiresIn: '7d',
+      issuer: 'night-god-tarot',
+      audience: 'night-god-tarot-users'
+    }
   );
+}
+
+// Blacklist for revoked tokens (in production, use Redis)
+const tokenBlacklist = new Set();
+
+// Revoke token
+export function revokeToken(token) {
+  tokenBlacklist.add(token);
+}
+
+// Check if token is blacklisted
+export function isTokenBlacklisted(token) {
+  return tokenBlacklist.has(token);
+}
+
+// Enhanced token verification with blacklist check
+export function verifyTokenWithBlacklist(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) {
+    req.user = { id: 'anonymous', tier: 'free' };
+    return next();
+  }
+
+  if (isTokenBlacklisted(token)) {
+    return res.status(401).json({ error: 'Token has been revoked' });
+  }
+
+  jwt.verify(token, JWT_SECRET, (err, user) => {
+    if (err) {
+      return res.status(403).json({ error: 'Invalid token' });
+    }
+    
+    req.user = user;
+    req.token = token;
+    next();
+  });
 }

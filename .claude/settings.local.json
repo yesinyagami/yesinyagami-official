@@ -26,7 +26,8 @@
       "Bash(npx tailwindcss:*)",
       "Bash(npm run test:*)",
       "WebSearch",
-      "WebFetch(domain:platform.monica.im)"
+      "WebFetch(domain:platform.monica.im)",
+      "Bash(dir:*)"
     ],
     "deny": []
   }

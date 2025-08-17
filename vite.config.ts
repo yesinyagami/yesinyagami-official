@@ -21,7 +21,15 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
-    sourcemap: true,
+    sourcemap: false, // Disable sourcemaps for production
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['vue', 'vue-router', 'pinia']
+        }
+      }
+    },
+    chunkSizeWarningLimit: 1000
   },
   define: {
     __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: 'false',
