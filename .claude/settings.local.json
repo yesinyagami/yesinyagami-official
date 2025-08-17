@@ -23,7 +23,10 @@
       "Bash(npx tailwindcss init:*)",
       "Bash(git add:*)",
       "Bash(npm create:*)",
-      "Bash(npx tailwindcss:*)"
+      "Bash(npx tailwindcss:*)",
+      "Bash(npm run test:*)",
+      "WebSearch",
+      "WebFetch(domain:platform.monica.im)"
     ],
     "deny": []
   }
