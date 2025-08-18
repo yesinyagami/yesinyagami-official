@@ -1,0 +1,77 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Development
+.git/
+.gitignore
+.github/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Build artifacts
+dist/
+dist-ssr/
+*.local
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Test coverage
+coverage/
+*.lcov
+.nyc_output/
+
+# Documentation
+*.md
+docs/
+LICENSE
+
+# Docker files (avoid recursion)
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+*.log
+
+# IDE
+.idea/
+.vscode/
+*.sublime-*
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Python cache (from card generation script)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Backup files
+backups/
+*.backup
+*.sql
+
+# Uploads (will be mounted as volume)
+uploads/
+
+# Logs (will be mounted as volume)
+logs/

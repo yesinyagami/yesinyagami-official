@@ -1,0 +1,33 @@
+{
+  "name": "Night God Tarot - The Silent Song",
+  "short_name": "Night God Tarot",
+  "description": "Experience divine wisdom through ancient Khraell language and Monica AI guidance. Premium mystical tarot readings with The Acoustic Codex.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#ffd700",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "./src/assets/night-god-logo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./src/assets/night-god-logo.jpg", 
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["lifestyle", "entertainment", "books"],
+  "screenshots": [
+    {
+      "src": "./src/assets/final.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ]
+}

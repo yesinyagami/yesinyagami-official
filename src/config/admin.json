@@ -1,0 +1,30 @@
+{
+  "superAdmin": {
+    "email": "yagami8095@hotmail.com",
+    "password": "yesinyagami8095",
+    "role": "super_admin",
+    "authorizedIP": "125.224.130.115",
+    "permissions": {
+      "viewAnalytics": true,
+      "manageUsers": true,
+      "managePayments": true,
+      "editContent": true,
+      "systemSettings": true,
+      "aiConfiguration": true,
+      "deleteData": true
+    }
+  },
+  "security": {
+    "allowedIPs": [
+      "125.224.130.115"
+    ],
+    "sessionTimeout": 7200,
+    "maxLoginAttempts": 3,
+    "lockoutDuration": 900
+  },
+  "system": {
+    "maintenanceMode": false,
+    "debugMode": false,
+    "logLevel": "info"
+  }
+}
