@@ -28,8 +28,9 @@
       "WebSearch",
       "WebFetch(domain:platform.monica.im)",
       "Bash(dir:*)",
-      "Bash(npm uninstall tailwindcss @tailwindcss/postcss)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(git push origin main)",
+      "Bash(gh workflow:*)"
     ],
     "deny": []
   }
