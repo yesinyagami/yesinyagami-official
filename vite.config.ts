@@ -13,6 +13,7 @@ export default defineConfig({
       '@': new URL('./src', import.meta.url).pathname,
     },
   },
+  base: process.env.NODE_ENV === 'production' ? '/yesinyagami-official/' : '/',
   server: {
     host: true,
     port: 5173,
@@ -21,7 +22,7 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
-    sourcemap: false, // Disable sourcemaps for production
+    sourcemap: false,
     rollupOptions: {
       output: {
         manualChunks: {
