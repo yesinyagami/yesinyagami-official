@@ -12,6 +12,7 @@ export default defineConfig({
             '@': new URL('./src', import.meta.url).pathname,
         },
     },
+    base: process.env.NODE_ENV === 'production' ? '/yesinyagami-official/' : '/',
     server: {
         host: true,
         port: 5173,
@@ -20,23 +21,15 @@ export default defineConfig({
     build: {
         outDir: 'dist',
         assetsDir: 'assets',
-        sourcemap: false, // Disable sourcemaps for production
+        sourcemap: false,
         rollupOptions: {
             output: {
                 manualChunks: {
-                    vendor: ['vue', 'vue-router', 'pinia'],
-                    utils: ['axios']
+                    vendor: ['vue', 'vue-router', 'pinia']
                 }
             }
         },
-        chunkSizeWarningLimit: 1000,
-        minify: 'terser',
-        terserOptions: {
-            compress: {
-                drop_console: true,
-                drop_debugger: true
-            }
-        }
+        chunkSizeWarningLimit: 1000
     },
     define: {
         __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: 'false',

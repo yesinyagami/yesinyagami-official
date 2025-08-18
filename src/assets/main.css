@@ -1,6 +1,8 @@
 @import './base.css';
 @import './design-system.css';
-@import 'tailwindcss';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 /* Global Styles */
 :root {
