@@ -30,7 +30,11 @@
       "Bash(dir:*)",
       "Bash(git checkout:*)",
       "Bash(git push origin main)",
-      "Bash(gh workflow:*)"
+      "Bash(gh workflow:*)",
+      "Bash(git commit:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(npm run type-check:*)",
+      "Bash(npm audit:*)"
     ],
     "deny": []
   }

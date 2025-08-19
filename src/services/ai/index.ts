@@ -2,12 +2,10 @@
 import type { TarotReading } from '../../types/tarot'
 
 interface ReadingRequest {
+  userId: string
+  spreadId: string
   cards: any[]
   question: string
-  user: {
-    id: string
-    preferences?: any
-  }
 }
 
 interface AISystem {
@@ -134,16 +132,14 @@ Focus on empowerment, growth, and spiritual guidance. Be mystical but practical.
     
     return {
       id: `reading-${Date.now()}`,
-      title: '✨ Divine Guidance Revealed',
-      mainText: response,
+      userId: request.userId,
+      spreadId: request.spreadId,
+      question: request.question,
       cards: request.cards,
+      interpretation: response,
       timestamp: new Date(),
-      confidence: 0.95,
-      tags: ['divine guidance', 'spiritual wisdom', 'personal growth'],
-      collectiveWisdom: 'The universe speaks through these sacred cards, revealing cosmic patterns and divine timing.',
-      personalAnalysis: 'Your unique energy signature shows readiness for transformation and spiritual growth.',
-      wisdomIntegration: 'By integrating ancient wisdom with modern insights, you unlock powerful pathways to your highest potential.',
-      poeticSublimation: 'Like stars that dance in the cosmic void, your soul\'s journey unfolds with purpose and divine grace.'
+      isPublic: false,
+      tags: ['divine guidance', 'spiritual wisdom', 'personal growth']
     }
   }
 
@@ -152,8 +148,11 @@ Focus on empowerment, growth, and spiritual guidance. Be mystical but practical.
     
     const mockReading: TarotReading = {
       id: `reading-${Date.now()}`,
-      title: '✨ Divine Guidance Revealed',
-      mainText: `
+      userId: request.userId,
+      spreadId: request.spreadId,
+      question: request.question,
+      cards: request.cards,
+      interpretation: `
         <p>The cosmic forces have aligned to bring you this sacred message through the cards: <strong>${cardNames}</strong>.</p>
         
         <p>Your question about "<em>${request.question}</em>" has been heard by the universe, and the divine response flows through these ancient symbols of wisdom.</p>
@@ -168,14 +167,9 @@ Focus on empowerment, growth, and spiritual guidance. Be mystical but practical.
         
         <p>Trust in the process, embrace the transformation, and step boldly into your destined future. The divine light within you illuminates the path ahead.</p>
       `,
-      cards: request.cards,
       timestamp: new Date(),
-      confidence: 0.95,
-      tags: ['guidance', 'transformation', 'destiny', 'spiritual growth'],
-      collectiveWisdom: 'The collective consciousness speaks through these cards, revealing patterns that connect your personal journey to the greater cosmic flow. Ancient wisdom traditions whisper guidance for navigating modern challenges.',
-      personalAnalysis: 'Your personal energy signature resonates with themes of growth, resilience, and authentic self-expression. The cards reflect your inner strength and readiness to embrace positive change in your life.',
-      wisdomIntegration: 'By integrating the lessons from your past experiences with present moment awareness, you create a powerful foundation for manifesting your highest potential and deepest aspirations.',
-      poeticSublimation: 'Like moonbeams dancing upon still waters, your soul\'s light emerges most brilliantly through life\'s sacred challenges, illuminating pathways previously hidden from view.'
+      isPublic: false,
+      tags: ['guidance', 'transformation', 'destiny', 'spiritual growth']
     }
 
     return Promise.resolve({ finalReading: mockReading })

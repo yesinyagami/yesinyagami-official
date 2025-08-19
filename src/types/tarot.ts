@@ -110,7 +110,7 @@ export type MonicaModel =
 
 export interface MonicaResponse {
   success: boolean
-  data?: any
+  data?: unknown
   error?: string
 }
 
@@ -139,7 +139,7 @@ export interface MonicaMemory {
 export interface MemoryEntry {
   timestamp: Date
   type: 'question' | 'interpretation' | 'feedback' | 'preference'
-  data: any
+  data: unknown
   importance: number // 1-10
 }
 
@@ -262,7 +262,7 @@ export interface StoryChoice {
 
 export interface UnlockCondition {
   type: 'readings_count' | 'specific_cards' | 'streak_days' | 'achievements' | 'story_progress' | 'special_event'
-  requirement: any
+  requirement: unknown
   description: string
 }
 
@@ -305,7 +305,7 @@ export interface VisualEffect {
 }
 
 export interface EffectParameters {
-  [key: string]: any
+  [key: string]: unknown
   color?: string
   speed?: number
   count?: number
@@ -424,7 +424,7 @@ export interface PaymentMetadata {
 
 export interface RealtimeEvent {
   type: string
-  data: any
+  data: unknown
   timestamp: Date
   userId?: string
   sessionId?: string
@@ -447,7 +447,7 @@ export interface SocialSettings {
 
 // =================== API & DATA TYPES ===================
 
-export interface APIResponse<T = any> {
+export interface APIResponse<T = unknown> {
   success: boolean
   data?: T
   error?: string
@@ -513,15 +513,26 @@ export type Environment = 'development' | 'staging' | 'production'
 export interface ValidationRule {
   field: string
   type: 'required' | 'email' | 'minLength' | 'maxLength' | 'pattern' | 'custom'
-  value?: any
+  value?: unknown
   message: string
-  validator?: (value: any) => boolean
+  validator?: (value: unknown) => boolean
 }
 
 export interface FormValidation {
   rules: ValidationRule[]
   errors: Record<string, string>
   isValid: boolean
+}
+
+// =================== REQUEST TYPES ===================
+
+export interface ReadingRequest {
+  question: string
+  spreadId: string
+  userId: string
+  cards?: DrawnCard[]
+  mood?: string
+  context?: ContextData
 }
 
 // =================== EXPORT ALL ===================

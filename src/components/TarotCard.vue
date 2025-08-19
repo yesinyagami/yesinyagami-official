@@ -21,8 +21,8 @@
           <div class="text-gold-400 text-4xl">🌙</div>
         </div>
         <img
-          v-else-if="card.imageUrl"
-          :src="card.imageUrl"
+          v-else-if="card.image"
+          :src="card.image"
           :alt="card.name"
           class="w-full h-full object-cover"
           @error="handleImageError"
@@ -77,10 +77,10 @@
       class="absolute top-full left-0 right-0 mt-2 p-4 bg-black/90 backdrop-blur-sm rounded-lg border border-white/20 z-10 text-sm"
     >
       <h4 class="font-semibold text-gold-400 mb-2">{{ card.name }}</h4>
-      <p class="text-gray-300 mb-2">{{ card.meaning }}</p>
+      <p class="text-gray-300 mb-2">{{ card.meanings?.upright?.general || 'No meaning available' }}</p>
       <div class="flex flex-wrap gap-1">
         <span
-          v-for="keyword in card.keywords"
+          v-for="keyword in (card.keywords?.upright || [])"
           :key="keyword"
           class="text-xs px-2 py-1 bg-purple-600/30 text-purple-200 rounded"
         >

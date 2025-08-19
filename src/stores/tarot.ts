@@ -53,12 +53,10 @@ export const useTarotStore = defineStore('tarot', () => {
       
       // Use AI system for reading
       const result = await aiSystem.performReading({
-        id: `reading-${Date.now()}`,
-        userId: request.user.id,
-        cards: request.cards,
+        userId: request.userId,
+        cards: request.cards || [],
         question: request.question,
-        user: request.user,
-        preferences: request.user.preferences
+        spreadId: request.spreadId
       })
       
       currentReading.value = result.finalReading
@@ -122,19 +120,31 @@ export const useTarotStore = defineStore('tarot', () => {
     // Major Arcana
     majorArcanaNames.forEach((name, index) => {
       cards.push({
-        id: index + 1,
+        id: `${index + 1}`,
         name,
         arcana: 'major',
-        suit: null,
-        rank: null,
         number: index,
-        keywords: [`keyword1-${index}`, `keyword2-${index}`],
-        meaning: `The meaning of ${name} represents...`,
-        reversedMeaning: `When reversed, ${name} indicates...`,
-        imageUrl: `/assets/${String(index + 1).padStart(2, '0')}_${name.replace(/\s+/g, '_')}.png`,
-        element: index % 4 === 0 ? 'fire' : index % 4 === 1 ? 'water' : index % 4 === 2 ? 'air' : 'earth',
-        planet: 'Mars',
-        zodiac: 'Aries'
+        keywords: {
+          upright: [`keyword1-${index}`, `keyword2-${index}`],
+          reversed: [`reversed1-${index}`, `reversed2-${index}`]
+        },
+        meanings: {
+          upright: {
+            general: `The meaning of ${name} represents...`,
+            love: 'Love interpretation...',
+            career: 'Career interpretation...',
+            spiritual: 'Spiritual interpretation...'
+          },
+          reversed: {
+            general: `When reversed, ${name} indicates...`,
+            love: 'Reversed love interpretation...',
+            career: 'Reversed career interpretation...',
+            spiritual: 'Reversed spiritual interpretation...'
+          }
+        },
+        image: `/assets/${String(index + 1).padStart(2, '0')}_${name.replace(/\s+/g, '_')}.png`,
+        description: `Description of ${name}...`,
+        element: index % 4 === 0 ? 'fire' : index % 4 === 1 ? 'water' : index % 4 === 2 ? 'air' : 'earth'
       })
     })
 
@@ -143,19 +153,32 @@ export const useTarotStore = defineStore('tarot', () => {
       ranks.forEach((rank, rankIndex) => {
         const cardNumber = 23 + (suitIndex * 14) + rankIndex
         cards.push({
-          id: cardNumber,
+          id: `${cardNumber}`,
           name: `${rank} of ${suit}`,
           arcana: 'minor',
-          suit: suit.toLowerCase() as any,
-          rank: rank.toLowerCase() as any,
+          suit: suit.toLowerCase() as 'wands' | 'cups' | 'swords' | 'pentacles',
           number: rankIndex + 1,
-          keywords: [`${suit.toLowerCase()}-${rank.toLowerCase()}`, 'growth'],
-          meaning: `The ${rank} of ${suit} represents...`,
-          reversedMeaning: `When reversed, the ${rank} of ${suit} indicates...`,
-          imageUrl: `/assets/${String(cardNumber).padStart(2, '0')}_${rank}_of_${suit}.png`,
-          element: suitIndex === 0 ? 'fire' : suitIndex === 1 ? 'water' : suitIndex === 2 ? 'air' : 'earth',
-          planet: 'Mercury',
-          zodiac: 'Gemini'
+          keywords: {
+            upright: [`${suit.toLowerCase()}-${rank.toLowerCase()}`, 'growth'],
+            reversed: [`blocked-${suit.toLowerCase()}`, 'stagnation']
+          },
+          meanings: {
+            upright: {
+              general: `The ${rank} of ${suit} represents...`,
+              love: 'Love interpretation...',
+              career: 'Career interpretation...',
+              spiritual: 'Spiritual interpretation...'
+            },
+            reversed: {
+              general: `When reversed, the ${rank} of ${suit} indicates...`,
+              love: 'Reversed love interpretation...',
+              career: 'Reversed career interpretation...',
+              spiritual: 'Reversed spiritual interpretation...'
+            }
+          },
+          image: `/assets/${String(cardNumber).padStart(2, '0')}_${rank}_of_${suit}.png`,
+          description: `Description of ${rank} of ${suit}...`,
+          element: suitIndex === 0 ? 'fire' : suitIndex === 1 ? 'water' : suitIndex === 2 ? 'air' : 'earth'
         })
       })
     })
@@ -163,19 +186,30 @@ export const useTarotStore = defineStore('tarot', () => {
     // Hidden Cards
     hiddenCards.forEach((name, index) => {
       cards.push({
-        id: 79 + index,
+        id: `${79 + index}`,
         name,
         arcana: 'hidden',
-        suit: null,
-        rank: null,
         number: index,
-        keywords: ['mystery', 'hidden wisdom', 'divine guidance'],
-        meaning: `${name} reveals hidden truths and divine guidance...`,
-        reversedMeaning: `When reversed, ${name} suggests...`,
-        imageUrl: `/assets/${String(79 + index).padStart(2, '0')}_${name.replace(/\s+/g, '_')}.png`,
-        element: 'spirit',
-        planet: 'Neptune',
-        zodiac: 'Pisces'
+        keywords: {
+          upright: ['mystery', 'hidden wisdom', 'divine guidance'],
+          reversed: ['illusion', 'false guidance', 'confusion']
+        },
+        meanings: {
+          upright: {
+            general: `${name} reveals hidden truths and divine guidance...`,
+            love: 'Hidden love interpretation...',
+            career: 'Hidden career interpretation...',
+            spiritual: 'Hidden spiritual interpretation...'
+          },
+          reversed: {
+            general: `When reversed, ${name} suggests...`,
+            love: 'Reversed hidden love interpretation...',
+            career: 'Reversed hidden career interpretation...',
+            spiritual: 'Reversed hidden spiritual interpretation...'
+          }
+        },
+        image: `/assets/${String(79 + index).padStart(2, '0')}_${name.replace(/\s+/g, '_')}.png`,
+        description: `Description of ${name}...`,
       })
     })
 
@@ -183,12 +217,15 @@ export const useTarotStore = defineStore('tarot', () => {
   }
 
   function generateFallbackReading(request: ReadingRequest): TarotReading {
-    const cardNames = request.cards.map(c => c.name).join(', ')
+    const cardNames = request.cards?.map((c: any) => c.name).join(', ') || 'No cards'
     
     return {
       id: `reading-${Date.now()}`,
-      title: '✨ Divine Guidance Revealed',
-      mainText: `
+      userId: request.userId,
+      spreadId: request.spreadId,
+      question: request.question,
+      cards: request.cards || [],
+      interpretation: `
         <p>The cosmic forces have aligned to bring you this sacred message through the cards: <strong>${cardNames}</strong>.</p>
         
         <p>Your question about "${request.question}" has been heard by the universe, and the divine response flows through these ancient symbols of wisdom.</p>
@@ -203,14 +240,9 @@ export const useTarotStore = defineStore('tarot', () => {
         
         <p>Trust in the process, embrace the transformation, and step boldly into your destined future.</p>
       `,
-      cards: request.cards,
       timestamp: new Date(),
-      confidence: 0.95,
-      tags: ['guidance', 'transformation', 'destiny'],
-      collectiveWisdom: 'The universe speaks through these cards, revealing patterns that connect your current situation to the greater cosmic flow.',
-      personalAnalysis: 'Your personal energy signature resonates with themes of growth, challenge, and ultimate triumph.',
-      wisdomIntegration: 'By integrating the lessons from your past with present awareness, you create a foundation for manifesting your highest potential.',
-      poeticSublimation: 'Like stars that shine brightest in the darkest night, your soul\'s light emerges most brilliantly through life\'s challenges.'
+      isPublic: false,
+      tags: ['guidance', 'transformation', 'destiny']
     }
   }
 
